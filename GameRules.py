@@ -49,7 +49,7 @@ def colWin():
 def diagWin():
     return
 
-def main():
+def playGame():
     running = True
     while running:
         player1 = "X"
@@ -87,4 +87,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    playGame()
