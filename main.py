@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 import sys
+import GameRules
 
 # Initialize pygame
 pygame.init()
@@ -52,7 +53,7 @@ def drawBoard():
 
 # Main loop
 running = True
-icon_positions = []
+iconPositions = []
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -60,27 +61,22 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # Get mouse click position and add to the list of icon positions
             x, y = event.pos
-            icon_positions.append((x, y))
+            xOfCell = x - (x % MINI_CELL_SIZE)
+            yOfCell = y - (y % MINI_CELL_SIZE)
+
+            iconPositions.append((xOfCell, yOfCell))
 
 
 
     screen.fill(WHITE)
     drawBoard()
 
-    for pos in icon_positions:
+    for pos in iconPositions:
+        print(pos)
         screen.blit(X_ICON, pos)
 
     pygame.display.flip()
     clock.tick(15)
-
-    # check clicked boxes
-    # numberedBoxes = np.zeros((9,9))
-
-    # if event.type == pygame.MOUSEBUTTONDOWN:
-    #     mouseX, mouseY = pygame.mouse.get_pos()
-    #     print(mouseX // MINI_CELL_SIZE)
-    #     screen.blit(X_ICON, (mouseX, mouseY))
-    #     pygame.display.flip()
 
 pygame.quit()
 sys.exit()
