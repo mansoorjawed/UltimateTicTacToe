@@ -14,6 +14,9 @@ O_ICON = pygame.image.load('O.png')
 # Scale Icons to appropriate size
 X_ICON = pygame.transform.scale(X_ICON, (MINI_CELL_SIZE, MINI_CELL_SIZE))
 O_ICON = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, MINI_CELL_SIZE))
+X_ICON_BIG = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, CELL_SIZE))
+O_ICON_BIG = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, CELL_SIZE))
+
 
 # Create the screen and clock objects
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -39,7 +42,8 @@ def main():
     # Main loop
     running = True
     iconPositions = []
-    symbols = []
+    smallSymbols = []
+    bigSymbols = []
     moveCount = 1
     gameBoardMatrix = np.zeros((9,9))
     players = [1,2]
@@ -63,17 +67,17 @@ def main():
 
                     endRow = startRow + 2
                     endCol = startCol + 2
-
                     if (row >= startRow and row <= endRow
                             and col >= startCol and col <= endCol):
-                        gameBoardMatrix, startRow, startRow, winner = playerMove(row, col, player,gameBoardMatrix)
+                        gameBoardMatrix, startRow, startCol, winner = playerMove(row, col, player,gameBoardMatrix)
+                        print(gameBoardMatrix, winner)
 
                         iconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
                         # Use a different icon to be placed on the board based on if its player 1 or 2 (rather player 0 or 1)
-                        if (player == 0):
-                            symbols.append(X_ICON)
+                        if (player == 1):
+                            smallSymbols.append(X_ICON)
                         else:
-                            symbols.append(O_ICON)
+                            smallSymbols.append(O_ICON)
 
                         moveCount += 1
 
@@ -84,9 +88,9 @@ def main():
                     iconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
                     # Use a different icon to be placed on the board based on if its player 1 or 2 (rather player 0 or 1)
                     if (player == 0):
-                        symbols.append(X_ICON)
+                        smallSymbols.append(X_ICON)
                     else:
-                        symbols.append(O_ICON)
+                        smallSymbols.append(O_ICON)
 
 
 
@@ -94,7 +98,7 @@ def main():
         drawBoard()
 
         for pos in range(len(iconPositions)):
-            screen.blit(symbols[pos], iconPositions[pos])
+            screen.blit(smallSymbols[pos], iconPositions[pos])
 
         pygame.display.flip()
         clock.tick(30)

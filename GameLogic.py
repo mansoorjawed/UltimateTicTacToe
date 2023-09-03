@@ -28,9 +28,13 @@ def playerMove(row, col, player, gameBoard):
 
     # get the next small 3x3 box for the next box and see if that board is already won
     microBoard = np.zeros((3, 3))
+    microRowStart = (row // 3) * 3
+    microColStart = (col // 3) * 3
     for i in range(3):
         for j in range(3):
-            microBoard[i][i] = gameBoard[nextStartRow + i][nextStartCol + j]
+            microBoard[i][j] = gameBoard[microRowStart + i][microColStart + j]
+
+    print(microBoard)
 
     winner = False
     if checkMicroWinner(microBoard):
