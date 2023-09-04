@@ -27,6 +27,7 @@ def playerMove(row, col, player, gameBoard):
     nextStartCol = (col % 3) * 3
 
     # get the next small 3x3 box for the next box and see if that board is already won
+    # get the next small 3x3 box for the next box and see if that board is already won
     microBoard = np.zeros((3, 3))
     microRowStart = (row // 3) * 3
     microColStart = (col // 3) * 3
@@ -34,45 +35,43 @@ def playerMove(row, col, player, gameBoard):
         for j in range(3):
             microBoard[i][j] = gameBoard[microRowStart + i][microColStart + j]
 
-    print(microBoard)
-
-    winner = False
+    microWin = False
     if checkMicroWinner(microBoard):
-        winner = True
+        microWin = True
 
-    return gameBoard, nextStartRow, nextStartCol, winner
+    return gameBoard, nextStartRow, nextStartCol, microWin
 
-#Check if a winning condition has been met for someone ot be declared a winner in the game
+#Check if a winning condition has been met for someone ot be declared a microWin in the game
 def checkMicroWinner(microBoard):
     checker = [microRowWin(microBoard), microColWin(microBoard), microDiagWin(microBoard)]
     return any(checker)
 
 def microColWin(microBoard):
-    winner = False
+    microWin = False
     colNumber = 3
     for i in range(colNumber):
         column = microBoard[:,i]
         compareValues = column == column[0]
         if (column[0] != 0 and compareValues.all()):
-            winner = True
+            microWin = True
             break
 
-    return winner
+    return microWin
 
 def microRowWin(microBoard):
-    winner = False
+    microWin = False
     for row in microBoard:
         if all(cell == row[0] and cell != 0 for cell in row):
-            winner = True
-    return winner
+            microWin = True
+    return microWin
 
 
 def microDiagWin(microBoard):
-    winner = False
+    microWin = False
     if ((microBoard[0][0] == microBoard[1][1] == microBoard[2][2] != 0)
             or (microBoard[2][0] == microBoard[1][1] == microBoard[0][2] != 0)):
-        winner = True
-    return winner
+        microWin = True
+    return microWin
 
 
 

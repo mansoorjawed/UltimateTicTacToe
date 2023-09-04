@@ -14,8 +14,8 @@ O_ICON = pygame.image.load('O.png')
 # Scale Icons to appropriate size
 X_ICON = pygame.transform.scale(X_ICON, (MINI_CELL_SIZE, MINI_CELL_SIZE))
 O_ICON = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, MINI_CELL_SIZE))
-X_ICON_BIG = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, CELL_SIZE))
-O_ICON_BIG = pygame.transform.scale(O_ICON, (MINI_CELL_SIZE, CELL_SIZE))
+X_ICON_BIG = pygame.transform.scale(X_ICON, (CELL_SIZE, CELL_SIZE))
+O_ICON_BIG = pygame.transform.scale(O_ICON, (CELL_SIZE, CELL_SIZE))
 
 
 # Create the screen and clock objects
@@ -41,9 +41,10 @@ def mouseButtonManager(event):
 def main():
     # Main loop
     running = True
-    iconPositions = []
-    smallSymbols = []
-    bigSymbols = []
+    smallIconPositions = []
+    smallIcons = []
+    bigIconPositions = []
+    bigIcons = []
     moveCount = 1
     gameBoardMatrix = np.zeros((9,9))
     players = [1,2]
@@ -69,36 +70,42 @@ def main():
                     endCol = startCol + 2
                     if (row >= startRow and row <= endRow
                             and col >= startCol and col <= endCol):
-                        gameBoardMatrix, startRow, startCol, winner = playerMove(row, col, player,gameBoardMatrix)
-                        print(gameBoardMatrix, winner)
+                        gameBoardMatrix, startRow, startCol, microWin = playerMove(row, col, player,gameBoardMatrix)
 
-                        iconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
+                        smallIconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
                         # Use a different icon to be placed on the board based on if its player 1 or 2 (rather player 0 or 1)
                         if (player == 1):
-                            smallSymbols.append(X_ICON)
+                            smallIcons.append(X_ICON)
                         else:
-                            smallSymbols.append(O_ICON)
+                            smallIcons.append(O_ICON)
+
+                        if microWin:
+                            bigIconPositions.append((startRow*CELL_SIZE, startCol*CELL_SIZE)) # beginning of the block
+                            bigIcons.append(X_ICON_BIG)
 
                         moveCount += 1
 
 
                 else:
                     moveCount += 1
-                    gameBoardMatrix, startRow, startCol, winner = playerMove(row, col, player,gameBoardMatrix)
-                    iconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
+                    gameBoardMatrix, startRow, startCol, microWin = playerMove(row, col, player, gameBoardMatrix)
+                    smallIconPositions.append((xOfCell, yOfCell))  # starting on game window of where to put an user symbol
                     # Use a different icon to be placed on the board based on if its player 1 or 2 (rather player 0 or 1)
                     if (player == 0):
-                        smallSymbols.append(X_ICON)
+                        smallIcons.append(X_ICON)
                     else:
-                        smallSymbols.append(O_ICON)
+                        smallIcons.append(O_ICON)
 
 
 
         screen.fill(WHITE)
         drawBoard()
 
-        for pos in range(len(iconPositions)):
-            screen.blit(smallSymbols[pos], iconPositions[pos])
+        for pos in range(len(smallIconPositions)):
+            screen.blit(smallIcons[pos], smallIconPositions[pos])
+
+        for pos in range(len(bigIconPositions)):
+            screen.blit(bigIcons[pos], bigIconPositions[pos])
 
         pygame.display.flip()
         clock.tick(30)
