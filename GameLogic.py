@@ -1,24 +1,13 @@
 import numpy as np
 import pygame
 from Constants import *
-def drawBoard():
-    # Draw the mini-grids
-    for x in range(GRID_SIZE):
-        for y in range(GRID_SIZE):
-            pygame.draw.rect(screen, BLACK, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE), THICK_BORDER_WIDTH)
 
-            for mini_x in range(1, GRID_SIZE):
-                pygame.draw.line(screen, BLACK, (x * CELL_SIZE + mini_x * MINI_CELL_SIZE, y * CELL_SIZE), (x * CELL_SIZE + mini_x * MINI_CELL_SIZE, (y + 1) * CELL_SIZE), BORDER_WIDTH)
-
-            for mini_y in range(1, GRID_SIZE):
-                pygame.draw.line(screen, BLACK, (x * CELL_SIZE, y * CELL_SIZE + mini_y * MINI_CELL_SIZE), ((x + 1) * CELL_SIZE, y * CELL_SIZE + mini_y * MINI_CELL_SIZE), BORDER_WIDTH)
-
-    # Draw the main grid
-    for i in range(1, GRID_SIZE):
-        pygame.draw.line(screen, BLACK, (i * CELL_SIZE, 0), (i * CELL_SIZE, SCREEN_HEIGHT), THICK_BORDER_WIDTH)
-        pygame.draw.line(screen, BLACK, (0, i * CELL_SIZE), (SCREEN_WIDTH, i * CELL_SIZE), THICK_BORDER_WIDTH)
-
-
+# This function is called whenever a player does a win
+# It plays the players move
+# Calculates the starting row and column for the next move
+# Checks if there are any winners in the microboard
+# The return is updated board, the starting and ending of next playable small board,
+# and if the move of the player led them to winning in the micro board
 def playerMove(row, col, player, gameBoard):
     gameBoard[row][col] = player
     # Formula for calculation last cell in the next boz
@@ -46,6 +35,8 @@ def checkMicroWinner(microBoard):
     checker = [microRowWin(microBoard), microColWin(microBoard), microDiagWin(microBoard)]
     return any(checker)
 
+# Check if the columns in the micro board are the same
+# as that would declare a winner
 def microColWin(microBoard):
     microWin = False
     colNumber = 3
@@ -58,6 +49,8 @@ def microColWin(microBoard):
 
     return microWin
 
+# Check if the rows in the micro board are the same
+# as that would declare a winner
 def microRowWin(microBoard):
     microWin = False
     for row in microBoard:
@@ -65,7 +58,8 @@ def microRowWin(microBoard):
             microWin = True
     return microWin
 
-
+# Check if the diagonals in the micro board are the same
+# as that would declare a winner
 def microDiagWin(microBoard):
     microWin = False
     if ((microBoard[0][0] == microBoard[1][1] == microBoard[2][2] != 0)
@@ -74,59 +68,21 @@ def microDiagWin(microBoard):
     return microWin
 
 
+# helper function to calculate row and column for the availability matrix
+def availabilityHelper(bigRow, bigCol):
+    row = bigRow % 3
+    col = bigCol % 3
+    return row, col
 
+# If a micro board is done because of a draw or a player 1, it should be marked unavailable
+# so that players are unable to mark anything in the block anymore.
+def markUnavailable(bigRow, bigCol, availabilityMatrix):
+    row, col =  availabilityHelper(bigRow, bigCol)
+    availabilityMatrix[row][col] = False
+    print(bigRow, row, bigCol, col, availabilityMatrix)
+    return availabilityMatrix
 
-
-
-
-
-
-
-
-# def game():
-#     players = [1, 2]
-#     moveCount = 0
-#     gameBoard = np.full((9, 9), " ", dtype=str)
-#
-#
-#     #Initial first move
-#     # Has to be outside the loop as it can be placed anywhere on the board
-#     player = players[((moveCount % 2) + 1)]
-#     inputMessage = f"Player {player} turn, Enter position: "
-#     pPosition = input(inputMessage)
-#
-#     gameBoard, nextStartRow, nextStartCol, winner = playerMove(int(pPosition[:1]), int(pPosition[1:2]), player,
-#                                                                gameBoard)
-#     moveCount += 1
-#
-#     rows = gameBoard.shape[0]
-#     columns = gameBoard.shape[1]
-#
-#     for row in range(rows):
-#         for col in range(columns):
-#
-#             nextEndRow = nextStartRow + 2
-#             nextEndCol = nextStartCol + 2
-#             # Similar as first move just with a predetermined next micro box based on previous move
-#             player = players[(moveCount % 2)]
-#             inputMessage = f"Player {player} turn, Enter position between {nextStartRow}{nextStartCol} and {nextEndRow}{nextEndCol}: "
-#             pPosition = input(inputMessage)
-#             row = int(pPosition[:1])
-#             col = int(pPosition[1:2])
-#             endRow = row + 2
-#             endCol =  col + 2
-#             # restrict values out of the required range of the micro Board
-#             while (row < nextStartRow or row > endRow
-#                    or col < nextStartCol or col > endCol):
-#                 pPosition = input(inputMessage)
-#                 row = int(pPosition[:1])
-#                 col = int(pPosition[1:2])
-#                 endRow = row + 2
-#                 endCol = col + 2
-#
-#             #check micro Winner
-#             winner = False
-#             # updated game board and next starting boxes
-#             gameBoard, nextStartRow, nextStartCol, winner = playerMove(row, col, player, gameBoard)
-#             print("Micro Won: ", winner)
-#             moveCount += 1
+# This if the micro Board the player clicked on is available or not
+def isMicroBoardAvailable(bigRow, bigCol, availabilityMatrix):
+    row, col = availabilityHelper(bigRow, bigCol)
+    return availabilityMatrix[row][col]

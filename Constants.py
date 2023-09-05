@@ -15,5 +15,8 @@ MINI_CELL_SIZE = CELL_SIZE // GRID_SIZE
 BORDER_WIDTH = 2
 THICK_BORDER_WIDTH = 4
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# Create the Icons
+X_ICON = pygame.image.load ('X.png')
+O_ICON = pygame.image.load('O.png')
+
 
