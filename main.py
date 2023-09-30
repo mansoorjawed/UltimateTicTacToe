@@ -4,7 +4,6 @@ import sys
 from GameLogic import *
 from Constants import *
 
-print("test push")
 # Initialize pygame
 pygame.init()
 
